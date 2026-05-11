@@ -44,7 +44,7 @@ Pilot SVWorkspace với 20 sinh viên VinUni, tháng 5 2026:
 
 - [x] File 01: Case evidence matrix (Klarna)
 - [x] File 03: Product ROI Dashboard (Parts A-D, Red-team, Checklist)
-- [ ] File 04: Reflection (24h sau lớp)
+- [x] File 04: Reflection (24h sau lớp)
 - [x] Push repo lên GitHub
 
 ---

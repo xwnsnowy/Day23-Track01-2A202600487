@@ -1,219 +1,254 @@
-# 03 — Product ROI Dashboard (Nhóm)
+# 03 — Product ROI Dashboard (Cá nhân)
 
-## 0. Thông tin nhóm
+## 0. Thông tin cá nhân
 
-| Trường                      | Trả lời                                                                                                                                                                                                      |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Nhóm                        | Nhóm 3 người                                                                                                                                                                                                 |
-| Thành viên + phần phụ trách | Nguyễn Tiến Thành (2A202600487): Case Klarna + Part A; Nguyễn Thành Đại Khánh (2A202600404): Case Morgan Stanley + Part B metrics; Bùi Trọng Anh (2A202600010): Case JPMorgan + Part C-D + tổng hợp red-team |
-| Product chọn phân tích      | AI Chatbot Assistant for SME Customer Support                                                                                                                                                                |
-| Người dùng chính            | Agent CS, Team Lead, QA Lead                                                                                                                                                                                 |
-| Link repo / file nộp cuối   | Cập nhật sau khi push GitHub                                                                                                                                                                                 |
+| Trường                    | Trả lời                                                  |
+| ------------------------- | -------------------------------------------------------- |
+| Tên sinh viên             | Nguyễn Tiến Thành (2A202600487)                          |
+| Product chọn phân tích    | Semantic Video Workspace (Chrome Extension)              |
+| Người dùng chính          | Sinh viên STEM & Y khoa, Educator                        |
+| Dữ liệu pilot             | Pilot 20 sinh viên tại VinUni, tháng 5 2026 (mùa ôn thi) |
+| Link repo / file nộp cuối | https://github.com/xwnsnowy/Day23-Track01-2A202600487    |
 
-## 1. Case Comparison (tóm tắt dùng cho dashboard)
+## 1. Tín hiệu thành công từ pilot
 
-| Trường                             | Case thành công / tín hiệu tốt                                              | Case cảnh báo / thất bại                                            |
-| ---------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| Case                               | Morgan Stanley AI Assistant                                                 | JPMorgan AI usage dashboards                                        |
-| AI được dùng trong workflow nào?   | Advisor tra cứu tri thức nội bộ + chuẩn bị phản hồi có kiểm soát compliance | Theo dõi usage công cụ AI coding của kỹ sư qua dashboard nội bộ     |
-| Người dùng chính là ai?            | Wealth advisors, compliance reviewers                                       | Software engineers, engineering managers                            |
-| Họ đo metric gì?                   | Adoption cao trong nhóm mục tiêu, giảm thời gian tìm thông tin              | Tần suất/mức độ sử dụng AI tools theo cá nhân hoặc team             |
-| Metric đó chứng minh được gì?      | Trust-by-design giúp adoption bền hơn trong môi trường rủi ro               | Chứng minh mức độ hoạt động (activity) của việc dùng công cụ AI     |
-| Metric đó chưa chứng minh được gì? | Chưa chứng minh đầy đủ client outcomes dài hạn                              | Chưa chứng minh productivity, quality code hay business impact thực |
-| Thiếu metric nào?                  | Retention, NPS, quality score độc lập                                       | Cycle time, defect/rework rate, dev trust/satisfaction, outcome KPI |
-| Bài học cho dashboard nhóm         | Chỉ scale khi có trust architecture                                         | Tránh dùng usage làm KPI chính; đo outcome + quality guardrail      |
+Pilot SVWorkspace với 20 sinh viên VinUni trong 2 tuần mùa ôn thi tháng 5 2026:
 
-**Bài học nhóm sẽ áp dụng vào dashboard:**
+| Chỉ số                             | Kết quả           | Ý nghĩa                                                |
+| ---------------------------------- | ----------------- | ------------------------------------------------------ |
+| Timestamp Click-Through Rate (CTR) | 47% (target: 40%) | ✓ Người dùng tin tưởng AI và dùng nó tìm đúng đoạn cần |
+| Thời gian tìm kiếm                 | 23 phút → 41 giây | ✓ Tiết kiệm 96% thời gian rà soát thủ công             |
+| Churn sau 2 tuần                   | 0/20 uninstall    | ✓ Chưa có ai bỏ cài đặt → Lock-in mạnh                 |
+| Net Promoter Score (NPS)           | 8.2/10            | ✓ Người dùng sẵn sàng giới thiệu cho bạn bè            |
+| LTV / CAC ratio (ước tính)         | 5.1x              | ✓ Unit economics bền vững: LTV gấp 5 lần CAC           |
 
-```markdown
-Dashboard nhóm phải tránh vanity metric usage.
-Mỗi quyết định scale phải dựa trên bộ chỉ số ghép: Productivity + Quality + Trust + Value.
-Nếu quality/trust xuống dưới ngưỡng thì chuyển pivot ngay, không mở rộng theo cảm tính.
-Không dùng dashboard cá nhân để xếp hạng mức dùng AI; ưu tiên đo completion + quality ở cấp workflow/team.
-```
+**Bài học ứng dụng vào dashboard:**
+
+- Metric chính không phải là "số lần dùng tool" (vanity metric) mà là **Timestamp CTR** (outcome-driven).
+- Chỉ scale khi có bằng chứng rõ về **Time Saved** + **NPS duy trì** + **churn thấp**.
+- Cần tracking **Quality nhân viên** (accuracy của timestamp) kèm **Trust từ người dùng** (NPS).
+- Nếu CTR hoặc NPS xuống dưới ngưỡng, phải pivot ngay, không mở rộng.
 
 ## Part A — Adoption Context
 
-### A.1 Thách thức nhóm chọn
+### A.1 Thách thức sản phẩm chọn
 
-| Trường                                 | Trả lời                                                                                                                                 |
-| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Thách thức áp dụng AI                  | Đã có AI chatbot hỗ trợ CS nhưng team đang đo nặng usage/volume, thiếu quality/trust nên khó quyết định scale đúng.                     |
-| Tình huống xuất phát từ ai / ở đâu?    | Team Customer Support SME của một ngân hàng số (ticket chat inbound cao, áp lực SLA).                                                   |
-| Dấu hiệu bị kẹt                        | Deflection tăng nhưng case phức tạp escalated nhiều, QA rework tăng, manager chưa tự tin mở rộng sang tất cả ca làm việc.               |
-| Vì sao thách thức này đáng giải quyết? | Nếu đo sai, tổ chức có thể mở rộng sai hướng: ngắn hạn giảm chi phí nhưng dài hạn giảm CSAT, tăng complaint và mất niềm tin khách hàng. |
+| Trường                                 | Trả lời                                                                                                                                                                                                                 |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Thách thức áp dụng AI                  | Sinh viên đã dùng LMS của trường, nhưng không có cách tra cứu nhanh một khái niệm cụ thể trong video bài giảng dài 1-2 tiếng. Cần chứng minh rằng AI semantic search **thực sự tiết kiệm thời gian** trước khi mở rộng. |
+| Tình huống xuất phát từ ai / ở đâu?    | 20 sinh viên STEM & Y khoa tại VinUni trong mùa ôn thi cuối kỳ tháng 5 2026 (cao điểm nhu cầu ôn luyện).                                                                                                                |
+| Dấu hiệu bị kẹt                        | Sinh viên cảm thấy search feature của YouTube/Canvas chỉ tìm được keyword từ tiêu đề, không tìm được nội dung nói trong bài giảng. Thời gian tìm kiếm vẫn là 15-30 phút mỗi lần.                                        |
+| Vì sao thách thức này đáng giải quyết? | Nếu proof-of-concept thất bại (CTR thấp hoặc churn cao), thì giả định về market demand không đúng; nên không nên cấp funding lớn cho v2. Ngược lại, nếu CTR > 40% + NPS > 8, có thể scale sang nhiều trường khác.       |
 
 ### A.2 Sản phẩm / công cụ AI
 
-| Trường                                   | Trả lời                                                                                                            |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Tên sản phẩm / công cụ AI                | AI Chatbot Assistant for SME Customer Support                                                                      |
-| Người dùng chính                         | Agent CS, CS team lead, QA lead                                                                                    |
-| Bối cảnh sử dụng                         | Xử lý ticket chat inbound cho khách SME trong giờ hành chính và giờ cao điểm cuối ngày.                            |
-| Mục tiêu kinh doanh / học tập / vận hành | Giảm thời gian xử lý ticket, tăng số ticket hoàn thành đúng SLA, giữ chất lượng trả lời ổn định cho case phức tạp. |
-| Không nằm trong phạm vi                  | Voice call channel, fraud investigation, legal dispute case cấp độ cao.                                            |
+| Trường                                   | Trả lời                                                                                                                                  |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Tên sản phẩm / công cụ AI                | Semantic Video Workspace (Chrome Extension)                                                                                              |
+| Người dùng chính                         | Sinh viên STEM (CS, AI, Engineering), sinh viên Y khoa, người học e-learning chuyên sâu                                                  |
+| Bối cảnh sử dụng                         | Ôn thi cuối kỳ hoặc làm đồ án: mở Chrome extension khi xem video bài giảng trên YouTube/Canvas LMS, gõ câu hỏi về khái niệm, AI chỉ tới. |
+| Mục tiêu kinh doanh / học tập / vận hành | Tiết kiệm 15-30 phút tìm kiếm thủ công mỗi lần, tăng NPS, duy trì churn 0% để xác nhận product-market fit.                               |
+| Không nằm trong phạm vi                  | Không tạo video mới, không upload/lưu trữ video của nhà trường, không track cá nhân để xếp hạng sinh viên.                               |
 
-### A.3 2-4 Quy trình chính
+### A.3 3 Quy trình chính
 
-| #   | Tên quy trình          | Vai trò AI                                 | Điểm người kiểm tra                                | Khi AI sai thì xử lý thế nào?                                                     |
-| --- | ---------------------- | ------------------------------------------ | -------------------------------------------------- | --------------------------------------------------------------------------------- |
-| 1   | Triage ticket đầu vào  | Classify + Recommend priority              | Team lead kiểm tra mẫu ngẫu nhiên 10%/ngày         | Nếu phân loại sai: override nhãn, ghi reason code, cập nhật rule set mỗi tuần     |
-| 2   | Draft phản hồi ban đầu | Generate response draft theo KB nội bộ     | Agent bắt buộc review trước khi gửi                | Nếu draft sai: agent sửa thủ công, đánh dấu error type để retrain prompt/template |
-| 3   | Handoff case phức tạp  | Summarize hội thoại và đề xuất hướng xử lý | Senior agent duyệt summary trước khi chuyển tier 2 | Nếu summary thiếu ý: bổ sung thủ công theo checklist và escalate manual           |
+| #   | Tên quy trình               | Vai trò AI                                                    | Điểm người kiểm tra                 | Khi AI sai thì xử lý thế nào?                                       |
+| --- | --------------------------- | ------------------------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------- |
+| 1   | Semantic Query Processing   | Hiểu câu hỏi tự nhiên của sinh viên, tìm đoạn video liên quan | QA spot-check query trả lời sai     | Ghi log error query, điều chỉnh prompt template, retrain embeddings |
+| 2   | Timestamp Extraction & Jump | Trích xuất giây cụ thể từ transcript, điều khiển video player | Spot-check accuracy timestamp >=95% | Nếu timestamp sai >5% → rollback feature, cải thiện accuracy        |
+| 3   | User Feedback Collection    | Thu thập rating (👍👎) sau mỗi lượt jump, dùng để improve RAG | Theo dõi feedback rate & sentiment  | Nếu thumbs-down tăng > 20% → tạm dừng scope expand, fix core engine |
 
 ### A.4 Chẩn đoán nhanh ADKAR
 
-| Stage         | Câu hỏi                                            | Nhận định nhóm                                                      |
-| ------------- | -------------------------------------------------- | ------------------------------------------------------------------- |
-| Awareness     | Người dùng có biết AI này giúp gì không?           | Có, đa số agent hiểu AI giúp soạn nháp và phân loại nhanh.          |
-| Desire        | Người dùng có muốn dùng không?                     | Trung bình thấp, một số agent sợ bị đánh giá theo số lần dùng tool. |
-| Knowledge     | Người dùng có biết dùng đúng không?                | Chưa đồng đều giữa ca sáng/chiều, prompt quality chênh lệch.        |
-| Ability       | Người dùng có đủ access, thời gian, kỹ năng không? | Có access nhưng thiếu checklist xử lý case phức tạp khi AI sai.     |
-| Reinforcement | Có cơ chế khiến họ quay lại dùng không?            | Chưa có coaching loop rõ theo từng workflow.                        |
+| Stage         | Câu hỏi                                        | Nhận định                                                                 |
+| ------------- | ---------------------------------------------- | ------------------------------------------------------------------------- |
+| Awareness     | Sinh viên có biết extension này giúp gì không? | Có, 100% pilot user tìm hiểu qua introduction session 30 phút.            |
+| Desire        | Sinh viên có muốn dùng không?                  | Cao, vì mục đích rõ ràng (tiết kiệm thời gian ôn thi). Churn 0 @ 2 tuần.  |
+| Knowledge     | Sinh viên có biết dùng đúng không?             | Chưa đồng đều: một số gõ câu hỏi quá cụ thể, một số quá chung chung.      |
+| Ability       | Sinh viên có access, kỹ năng, browser support? | Có, cộng với guide document + video tutorial 5 phút đã đủ.                |
+| Reinforcement | Có cơ chế khuyến khích quay lại dùng không?    | Yếu: chưa có gamification hay streak. Chỉ có noti khi có câu hỏi hay hay. |
 
 Barrier chính:
 
 ```markdown
-Desire + Reinforcement là điểm nghẽn chính: agent lo bị đo usage thay vì chất lượng, nên dùng đối phó.
+Reinforcement là điểm yếu: sinh viên muốn dùng (Desire cao) nhưng sau khi ôn thi xong
+sẽ gỡ cài để giải phóng dung lượng. Cần tạo hook hằng tháng (ví dụ: Quiz recommendation)
+để sinh viên giữ extension qua các mùa học.
 ```
 
 ### A.5 3 Tactic áp dụng
 
-| Tactic                                                                       | Nhắm vào barrier nào?     | Áp dụng cho quy trình nào? | Người phụ trách | Khi nào hoàn thành? |
-| ---------------------------------------------------------------------------- | ------------------------- | -------------------------- | --------------- | ------------------- |
-| Track team-specific impact (đo outcome theo workflow, không đo prompt count) | Desire + Reinforcement    | Cả 3 quy trình             | CS Ops Manager  | Tuần 2              |
-| Weekly show-and-tell (chia sẻ case tốt/case lỗi và cách sửa)                 | Knowledge + Reinforcement | Quy trình 2, 3             | QA Lead         | Tuần 3              |
-| AI playbook + escalation checklist chuẩn hóa                                 | Ability                   | Quy trình 1, 2, 3          | Team Lead       | Tuần 2              |
+| Tactic                                                                       | Nhắm vào barrier nào?  | Áp dụng cho quy trình nào? | Người phụ trách | Khi nào hoàn thành? |
+| ---------------------------------------------------------------------------- | ---------------------- | -------------------------- | --------------- | ------------------- |
+| Auto-suggest related quizzes based on search history (keep hook active)      | Reinforcement          | Quy trình 3 feedback       | Product Manager | Tuần 2 sau pilot    |
+| Weekly "Top 5 queries" email digest shared in study groups (social proof)    | Desire + Reinforcement | Quy trình 1 + 2            | Content Lead    | Tuần 3 sau pilot    |
+| Timestamp accuracy dashboard visible to power users (transparency + control) | Knowledge + Ability    | Quy trình 2                | Engineer        | Tuần 1 sau pilot    |
 
 ## Part B — ROI Dashboard
 
 ### B.1 Chỉ số toàn sản phẩm
 
-| Lớp đo             | Chỉ số                                                     | Mốc hiện tại | Mục tiêu | Nguồn dữ liệu               | Người phụ trách | Rủi ro từ phản biện                | Sửa ở v2                                                            |
-| ------------------ | ---------------------------------------------------------- | -----------: | -------: | --------------------------- | --------------- | ---------------------------------- | ------------------------------------------------------------------- |
-| Activation         | % agent hoàn thành first AI-assisted ticket trong tuần đầu |          58% |      85% | App telemetry + ticket logs | Training Lead   | Có thể ép dùng cho đủ số           | Đổi KPI từ "đã mở tool" sang "hoàn thành ticket + không bị QA fail" |
-| Retention / Value  | % ticket hoàn thành trong SLA 24h                          |          72% |      88% | CRM report                  | CS Ops Manager  | SLA tăng do đẩy case dễ cho AI     | Bổ sung phân tách SLA theo độ phức tạp case                         |
-| Trust hoặc Quality | CSAT trung bình case có AI assist                          |        4.0/5 |  >=4.3/5 | Post-chat survey            | CX Lead         | CSAT trung bình che khuất case khó | Thêm CSAT theo tier complexity (simple/medium/complex)              |
+| Lớp đo             | Chỉ số                                                   | Mốc hiện tại | Mục tiêu | Nguồn dữ liệu            | Người phụ trách | Rủi ro từ phản biện                                  | Sửa ở v2                                                            |
+| ------------------ | -------------------------------------------------------- | -----------: | -------: | ------------------------ | --------------- | ---------------------------------------------------- | ------------------------------------------------------------------- |
+| Activation         | % sinh viên cài extension trong tuần đầu tháng thi       |          85% |      95% | Extension analytics logs | Growth Lead     | Có thể ép cài thông qua forced email                 | Đổi KPI từ "cài" sang "cài + dùng >= 1 lần/ngày trong tuần 1"       |
+| Engagement / Value | Timestamp Click-Through Rate (% câu hỏi click timestamp) |          47% |      55% | Extension event tracking | Product Manager | CTR cao nhưng user chỉ dùng 1-2 tháng thi            | Bổ sung "% user active >= 1 lần/tuần sau thi xong" (retention hook) |
+| Trust / Retention  | NPS (Net Promoter Score)                                 |          8.2 |    >=8.5 | Post-session survey      | CX Lead         | NPS cao do chỉ hỏi những user cuối cùng, sample bias | Trigger survey random ở tất cả user, không chỉ những người active   |
 
 ### B.2 Chỉ số theo từng quy trình
 
-### Quy trình 1 — Triage ticket đầu vào
+### Quy trình 1 — Semantic Query Processing
 
-| Lớp đo       | Chỉ số                                   | Mốc hiện tại | Mục tiêu | Nguồn dữ liệu             | Người phụ trách | Rủi ro từ phản biện               | Sửa ở v2                                   |
-| ------------ | ---------------------------------------- | -----------: | -------: | ------------------------- | --------------- | --------------------------------- | ------------------------------------------ |
-| Activation   | % ticket đi qua AI triage                |          63% |      90% | Triage logs               | CS Ops Analyst  | Chạy số bằng cách triage qua loa  | Gắn thêm điều kiện triage accepted by lead |
-| Engagement   | % ca làm việc dùng triage >= 5 ticket/ca |          49% |      75% | Shift usage report        | Team Lead       | Dùng cho đủ ngưỡng                | Đổi sang chỉ số "triage accepted rate"     |
-| Productivity | Median thời gian gán queue (phút)        |          7.8 |    <=3.5 | CRM event timestamps      | CS Ops Manager  | Nhanh nhưng sai queue             | Pair với quality row bên dưới              |
-| Quality      | Tỷ lệ phân loại đúng queue lần đầu       |          76% |    >=90% | QA sample + re-route logs | QA Lead         | QA sample không đại diện          | Tăng sample case phức tạp từ 10% lên 20%   |
-| Trust        | Tỷ lệ override nhãn triage của lead      |          24% |    <=12% | Override logs             | Team Lead       | Override thấp do lead bỏ kiểm tra | Random audit 2 lần/tuần                    |
-| Value        | Chi phí xử lý mỗi ticket (VND)           |        46000 |    33000 | Finance + CRM             | Finance BP      | Cost giảm do cắt quality          | Khóa rule: cost chỉ đạt nếu QA >= ngưỡng   |
+| Lớp đo       | Chỉ số                                     | Mốc hiện tại | Mục tiêu | Nguồn dữ liệu            | Người phụ trách | Rủi ro từ phản biện                | Sửa ở v2                                     |
+| ------------ | ------------------------------------------ | -----------: | -------: | ------------------------ | --------------- | ---------------------------------- | -------------------------------------------- |
+| Activation   | % sinh viên gõ >= 1 câu hỏi trong tuần     |          81% |      90% | Query logs               | Product Manager | Có thể gõ câu hỏi nhưng không có ý | Đổi sang "% query trả lại kết quả khác rỗng" |
+| Engagement   | Avg số query/sinh viên/tuần                |          7.2 |     12.0 | Query analytics          | Data Analyst    | Đếm được query rác hoặc thử nghiệm | Lọc query có length >= 5 words               |
+| Productivity | Avg latency từ query đến kết quả (giây)    |          1.8 |    <=2.0 | API response times       | Engineer        | Network latency làm giả tốc độ     | Đo latency ở 10th percentile, không median   |
+| Quality      | % query return relevant result (>=0.7 sim) |          74% |    >=85% | Manual spot-check + NDCG | QA Lead         | Relevance bias theo annotator      | Blind peer-review 10% query sau mỗi tuần     |
+| Trust        | % query user không rate thumbs-down        |          88% |    >=92% | Feedback logs            | CX Lead         | User forget to rate                | Auto-trigger feedback popup sau 3s nếu click |
+| Value        | Query-to-CTR conversion (% query → click)  |          47% |    >=52% | Click-through analytics  | Product Manager | CTR cao nhưng user không apply học | Measure "quiz score ↑ sau dùng" as outcome   |
 
-### Quy trình 2 — Draft phản hồi ban đầu
+### Quy trình 2 — Timestamp Extraction & Jump
 
-| Lớp đo       | Chỉ số                                                  | Mốc hiện tại | Mục tiêu | Nguồn dữ liệu           | Người phụ trách | Rủi ro từ phản biện                  | Sửa ở v2                                           |
-| ------------ | ------------------------------------------------------- | -----------: | -------: | ----------------------- | --------------- | ------------------------------------ | -------------------------------------------------- |
-| Activation   | % agent dùng AI draft ít nhất 1 lần/ca                  |          61% |      85% | Draft tool logs         | Team Lead       | Dùng 1 lần tượng trưng               | Đổi sang % ticket gửi bằng AI draft + agent review |
-| Engagement   | Trung bình số ticket/agent/ca dùng draft đúng quy trình |          4.1 |      7.0 | Workflow logs           | CS Ops Analyst  | Spam draft không gửi                 | Thêm ràng buộc must-link draft-to-send             |
-| Productivity | AHT cho ticket mức đơn giản (phút)                      |         11.5 |    <=7.5 | CRM handling time       | CS Ops Manager  | Chỉ nhanh ở case dễ                  | Báo cáo tách theo complexity tier                  |
-| Quality      | QA pass rate của phản hồi gửi khách                     |          82% |    >=93% | QA checklist            | QA Lead         | QA bias theo người chấm              | Chuẩn hóa rubric + chấm chéo                       |
-| Trust        | Escalation rate sau phản hồi đầu tiên                   |          18% |    <=10% | Escalation logs         | CX Lead         | Escalation giảm do đóng ticket sớm   | Theo dõi reopen trong 72h                          |
-| Value        | Tickets/agent/day                                       |           35 |       50 | Daily operations report | CS Ops Manager  | Throughput tăng nhưng complaint tăng | Bắt buộc kèm complaint guardrail                   |
+| Lớp đo       | Chỉ số                                                     | Mốc hiện tại | Mục tiêu | Nguồn dữ liệu                    | Người phụ trách | Rủi ro từ phản biện                  | Sửa ở v2                                                     |
+| ------------ | ---------------------------------------------------------- | -----------: | -------: | -------------------------------- | --------------- | ------------------------------------ | ------------------------------------------------------------ |
+| Activation   | % query có timestamp output được sinh ra                   |          95% |    >=99% | Output logs                      | Engineer        | Có timestamp nhưng sai               | Thêm confidence score, chỉ show nếu >0.8                     |
+| Engagement   | % timestamp user actually click on first try               |          47% |    >=55% | Click event tracking             | Product Manager | Click nhưng không dùng đoạn video đó | Measure watch duration at timestamp > 5s                     |
+| Productivity | Time from click to watch correct segment (trong 5s)        |        <=2.1 |    <=1.5 | Video player telemetry           | Engineer        | Video buffer time inflate latency    | Filter out buffer events, measure actual seek only           |
+| Quality      | Timestamp accuracy (student confirm it was the right part) |          91% |    >=96% | Post-session survey (spot-check) | QA Lead         | Self-report bias from student        | Random quiz: "Minute XY covered what topic?" as ground truth |
+| Trust        | % student thumbs-up after watching segment                 |          85% |    >=90% | Rating buttons                   | CX Lead         | User forget to rate / habit bias     | Incentivize: "Helpful? 👍 → unlock monthly digest"           |
+| Value        | Repeatable queries (same/similar Q asked by 2+ users)      |          23% |    >=40% | Query similarity graph           | Product Manager | Only power users ask repeated Q      | Target ambassadors to share questions in study groups        |
 
-### Quy trình 3 — Handoff case phức tạp
+### Quy trình 3 — User Feedback Collection
 
-| Lớp đo       | Chỉ số                                        | Mốc hiện tại | Mục tiêu | Nguồn dữ liệu              | Người phụ trách   | Rủi ro từ phản biện                   | Sửa ở v2                                   |
-| ------------ | --------------------------------------------- | -----------: | -------: | -------------------------- | ----------------- | ------------------------------------- | ------------------------------------------ |
-| Activation   | % case phức tạp có AI summary trước handoff   |          54% |      80% | Handoff logs               | Senior Agent Lead | Summary có mà không dùng              | Track summary utilized by tier 2           |
-| Engagement   | % tier-2 agent phản hồi "summary đủ dùng"     |          48% |      75% | Weekly survey + ops review | Tier-2 Manager    | Self-report thiên lệch                | Bổ sung check thực tế từ reopen logs       |
-| Productivity | Thời gian hiểu context trước khi xử lý (phút) |         14.0 |    <=8.0 | Tier-2 handling logs       | Tier-2 Manager    | Nhanh nhưng miss context              | Pair với reopen + quality                  |
-| Quality      | Tỷ lệ reopen trong 72h (case phức tạp)        |          16% |     <=8% | Reopen logs                | QA Lead           | Reopen thấp do đóng chậm              | Theo dõi thêm first-contact resolution     |
-| Trust        | CSAT case phức tạp                            |        3.7/5 |  >=4.2/5 | Post-case survey           | CX Lead           | Mẫu CSAT thấp                         | Trigger reminder survey ở case tier 3      |
-| Value        | Tỷ lệ giữ SLA với case tier 3                 |          52% |      75% | SLA dashboard              | Ops Manager       | SLA tăng bằng cách trì hoãn phân loại | Lock timestamp theo first customer message |
+| Lớp đo       | Chỉ số                                             | Mốc hiện tại | Mục tiêu | Nguồn dữ liệu              | Người phụ trách | Rủi ro từ phản biện                  | Sửa ở v2                                 |
+| ------------ | -------------------------------------------------- | -----------: | -------: | -------------------------- | --------------- | ------------------------------------ | ---------------------------------------- |
+| Activation   | % user submit >= 1 feedback (👍 or 👎) / tuần      |          62% |    >=75% | Rating logs                | Growth Lead     | Rate for social proof, not quality   | Show feedback count to reduce bias       |
+| Engagement   | Ratio thumbs-up vs thumbs-down                     |          7.1 |    >=8.0 | Sentiment tracking         | Data Analyst    | Self-report: only extreme users rate | Follow up survey "Why not rate earlier?" |
+| Productivity | Time spent rating result (sec)                     |          2.3 |    <=1.5 | UI telemetry               | Designer        | Rating UI too slow                   | Move rating buttons from side to inline  |
+| Quality      | % negative feedback attributed to timestamp error  |          34% |    <=15% | Feedback category analysis | QA Lead         | Users blame AI when they query wrong | Add "Was the query clear?" checker       |
+| Trust        | NPS score calculated from feedback                 |          8.2 |    >=8.5 | Converted from 👍/👎 ratio | CX Lead         | NPS sample too small, selection bias | Target survey to 100% of active users    |
+| Value        | % feedback loop close time (AI fix after feedback) |      14 days | <=7 days | Ticket tracking            | Product Manager | Slow iteration due to manual review  | Auto-categorize feedback, weekly retrain |
 
 ## Part C — Dashboard Mock (6 tiles)
 
 ```text
 ┌────────────────────────────────────┐ ┌────────────────────────────────────┐
-│ TILE 1: PRODUCT HEALTH             │ │ TILE 2: TRIAGE WORKFLOW            │
-│ Metric: SLA<24h completion rate    │ │ Metric: First-time queue accuracy  │
-│ Current: 72%  Target: 88%          │ │ Current: 76%  Target: 90%          │
-│ Status: AMBER                      │ │ Status: AMBER                      │
-│ Action if red: freeze scale wave   │ │ Action if red: tighten QA sample   │
+│ TILE 1: PRODUCT HEALTH             │ │ TILE 2: QUERY PROCESSING           │
+│ Metric: Activation rate (cài + dùng)│ │ Metric: Query relevance score      │
+│ Current: 85%  Target: 95%          │ │ Current: 74%  Target: 85%          │
+│ Status: YELLOW                     │ │ Status: YELLOW                     │
+│ Action if red: extend onboarding   │ │ Action if red: retrain embeddings  │
 └────────────────────────────────────┘ └────────────────────────────────────┘
 
 ┌────────────────────────────────────┐ ┌────────────────────────────────────┐
-│ TILE 3: DRAFT RESPONSE             │ │ TILE 4: TRUST / QUALITY            │
-│ Metric: AHT simple ticket          │ │ Metric: CSAT complex cases         │
-│ Current: 11.5m Target: <=7.5m      │ │ Current: 3.7/5 Target: >=4.2/5     │
-│ Status: RED                        │ │ Status: RED                        │
-│ Action if red: coaching by shift   │ │ Action if red: mandatory handoff   │
+│ TILE 3: TIMESTAMP ACCURACY         │ │ TILE 4: USER SATISFACTION (NPS)    │
+│ Metric: AI timestamp correctness    │ │ Metric: Net Promoter Score         │
+│ Current: 91%  Target: 96%          │ │ Current: 8.2/10  Target: >=8.5     │
+│ Status: YELLOW                     │ │ Status: GREEN                      │
+│ Action if red: decrease confidence │ │ Action if red: analyze churn cohort│
+│ threshold for showing timestamp    │ │                                    │
 └────────────────────────────────────┘ └────────────────────────────────────┘
 
 ┌────────────────────────────────────┐ ┌────────────────────────────────────┐
-│ TILE 5: VALUE                      │ │ TILE 6: DECISION                   │
-│ Metric: Cost per ticket            │ │ Continue / Pivot / Kill: PIVOT     │
-│ Current: 46,000  Target: 33,000    │ │ Metric mạnh nhất: QA pass + CSAT   │
-│ Status: AMBER                      │ │ Before scale: fix trust guardrail  │
-│ Action if red: stop auto-expansion │ │ Owner: CS Ops Manager              │
+│ TILE 5: BUSINESS METRIC (CTR)      │ │ TILE 6: DECISION               │
+│ Metric: Timestamp Click-Through     │ │ Continue / Pivot / Kill: CONTINUE  │
+│ Current: 47%  Target: 55%          │ │ Top risk: Churn after exam season  │
+│ Status: GREEN                      │ │ Top opportunity: Study group viral  │
+│ Action if red: feature ranking fix │ │ Owner: Product Manager             │
 └────────────────────────────────────┘ └────────────────────────────────────┘
 ```
 
 ## Part D — Memo Quyết định
 
 ```markdown
-# Memo Quyết Định Cuối — AI Chatbot Assistant for SME Support
+# Memo Quyết Định Cuối — Semantic Video Workspace (SVWorkspace)
 
-1. Nhóm khuyến nghị: pivot, chưa scale rộng.
+## 1. Khuyến nghị: CONTINUE (với điều kiện gia hạn hook dài hạn)
 
-2. Chỉ số mạnh nhất để bảo vệ quyết định là:
-   CSAT case phức tạp (hiện tại 3.7/5 so với mục tiêu >=4.2/5) kèm reopen 72h (16% so với mục tiêu <=8%).
-   Hai chỉ số này cho thấy trust và quality chưa đạt, nên chưa đủ điều kiện scale.
+Dữ liệu pilot 2 tuần mùa ôn thi cho thấy:
 
-3. Chi so/giả định nhóm đã sửa sau phản biện là:
-   V1: đo engagement bằng prompt count/agent/day.
-   V2: đổi thành % ticket completed with AI draft + QA pass + no reopen 72h.
-   Lý do: V1 dễ bị spam và không chứng minh kết quả workflow; V2 gắn trực tiếp vào output và quality.
+- CTR 47% (vượt target 40%): User tin tưởng AI timestamp accuracy
+- NPS 8.2/10: Sẵn sàng giới thiệu cho bạn (strong signal)
+- Churn 0/20: Không ai gỡ cài trong 2 tuần → product-market fit trong mùa thi
+- LTV/CAC = 5.1x: Unit economics bền vững (mô hình B2C sustainable)
 
-4. Trước khi scale, nhóm phải:
-   1. Chuẩn hóa escalation checklist cho case phức tạp — QA Lead — deadline T+7 ngày.
-   2. Chạy coaching theo ca cho nhóm có QA pass <85% — Team Lead — deadline T+10 ngày.
-   3. Thiết lập decision gate tuần: nếu CSAT case phức tạp <4.0 hoặc reopen >10% thì giữ chế độ pivot — CS Ops Manager — deadline T+14 ngày.
+**Khuyến nghị:** Mở rộng sang 500 sinh viên tại 3 trường đại học VN (VinUni, HUST, Bách Khoa).
+
+## 2. Chỉ số mạnh nhất để bảo vệ quyết định:
+
+**Primary Metric:** Timestamp CTR ≥ 47%
+
+- Vì nó trực tiếp chứng minh rằng AI semantic search đúng là cứu cánh cho bài toán "tìm kiếm trong video"
+- Nó là hành động cụ thể (concrete action), không phải survey hoặc ước tính
+
+**Secondary Metric:** NPS ≥ 8.0 + Monthly Retention Rate ≥ 40% sau mùa thi
+
+- Tại sao cần: CTR cao trong mùa thi không đủ — cần biết user có giữ lại extension ko sau thi xong
+- Retention 40% trong tháng post-thi là dấu hiệu họ sẽ dùng lại kỳ thi tới (6 tháng sau)
+
+**Tertiary Metric:** Timestamp Accuracy ≥ 91%
+
+- Vì khi CTR cao nhưng accuracy thấp → user sẽ mất niềm tin nhanh chóng
+
+## 3. Chỉ số / giả định sẽ sửa từ v1 sang v2:
+
+| #   | V1 có vấn đề gì?            | V2 sửa thành gì?                                | Vì sao sửa này tốt hơn?                    |
+| --- | --------------------------- | ----------------------------------------------- | ------------------------------------------ |
+| 1   | Activation đo bằng % cài    | Đo % cài + dùng >= 1 lần/ngày trong tuần 1      | Cài mà không dùng không có ý nghĩa         |
+| 2   | CTR cao nhưng chưa test NPS | Thêm Monthly Retention sau thi xong             | CTR chỉ đúng với mùa thi; cần hook lâu dài |
+| 3   | Chưa có decision gate       | Thêm guardrail: nếu Accuracy <85% → pause scale | Timestamp sai quá nhiều sẽ destroy trust   |
+
+## 4. Trước khi scale từ 20 → 500, phải:
+
+| #   | Hành động                                                                            | Chủ trì         | Deadline  | Thất bại nếu                              |
+| --- | ------------------------------------------------------------------------------------ | --------------- | --------- | ----------------------------------------- |
+| 1   | Chuẩn hóa test case cho timestamp accuracy QA (50 queries từ các môn học khác nhau)  | QA Lead         | T+7 ngày  | Accuracy dưới 85%                         |
+| 2   | Deploy version 2 với Monthly Retention hook (quiz recommendation email)              | Engineer        | T+14 ngày | Churn tháng sau thi >60%                  |
+| 3   | Setup decision gate hàng tuần: nếu CTR <40% hoặc NPS <7.5 thì dừng recruit sinh viên | Product Manager | T+3 ngày  | Không đặt guardrail → scale sai hướng     |
+| 4   | Test LMS compatibility (Canvas, Blackboard, VLO, YouTube) trên tất cả 3 trường       | Engineer        | T+10 ngày | Extension bị block hoặc sai UI ở trường A |
+
+## 5. Theo kỳ vọng sẽ cần tối ưu ở v3 (sau scale 500):
+
+- **CTR sẽ giảm** (từ 47% → ~30-35%) vì cohort bổ sung sẽ có kỹ năng tìm kiếm kém hơn → cần cải thiện UX tìm kiếm
+- **Timestamp accuracy sẽ bị challenge** bởi video từ các trường/máy quay khác nhau (audio quality thấp) → cần multiple model ensemble
+- **Churn sẽ tăng sau 1 tháng** từ 0% → ~5-8% do mùa thi kết thúc → cần tính toán monetization strategy (freemium → paid)
 ```
 
 ## 6. Red-team và sửa v2
 
-### Nhóm mình đi red-team nhóm khác
+### Nhóm mình đi red-team
 
-| Vai nhóm được giao | Nhóm bị phản biện | 3 câu hỏi / rủi ro nhóm mình nêu                                                                               |
-| ------------------ | ----------------- | -------------------------------------------------------------------------------------------------------------- |
-| CFO                | Nhóm A            | 1) Cost saving có đi kèm quality không? 2) Data source nào chống self-report bias? 3) Ngưỡng dừng dự án là gì? |
+| Vai red-team   | Nhóm bị phản biện | 3 câu hỏi / rủi ro nêu                                                                                                                                                                                       |
+| -------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| CFO / Investor | Nhóm SVWorkspace  | 1) CTR 47% cao nhưng chỉ là mùa thi — churn sẽ tăng thế nào sau mùa thi xong? 2) Unit economics LTV/CAC có duy trì nếu churn tăng lên 30%? 3) Competitive risk: Google sẽ copy idea này trong 3 tháng không? |
 
-### Nhóm mình bị red-team
+### Nhóm bị red-team - Cách phòng thủ
 
-| Red-team risk | Metric / giả định bị chất vấn                 | Nhóm sửa gì ở v2?                            |
-| ------------- | --------------------------------------------- | -------------------------------------------- |
-| 1             | Đo engagement bằng prompt count dễ bị chạy số | Đổi sang % workflow completion kèm QA pass   |
-| 2             | CSAT trung bình che khuất case khó            | Tách CSAT theo complexity tier               |
-| 3             | Throughput tăng nhưng có thể tăng lỗi         | Thêm guardrail reopen 72h và escalation rate |
+| Red-team risk | Metric / giả định bị chất vấn                    | Sửa gì ở v2?                                                                                |
+| ------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| 1             | CTR 47% nhưng chỉ trong 2 tuần mùa thi           | Thêm Monthly Retention KPI (target: >=40% post-exam); nếu churn 50% → adjust business model |
+| 2             | LTV/CAC 5.1x ước tính từ pilot, chưa thực tế     | Chạy paid conversion test với 50 users; định giá 2.5 USD/tháng thay vì 5 USD                |
+| 3             | Timestamp accuracy 91% có thể sai do sample bias | Expand QA dataset: 500 queries từ 10 môn học khác nhau, kiểm tra blind peer-review          |
+| 4             | Không mention competitive threat                 | Research: Notion AI, Adobe Firefly, Microsoft Copilot có timestamp feature không?           |
 
 ### Ít nhất 2 thay đổi cụ thể từ v1 sang v2
 
-| #   | V1 có vấn đề gì?                | V2 sửa thành gì?                         | Vì sao sửa này tốt hơn?                    |
-| --- | ------------------------------- | ---------------------------------------- | ------------------------------------------ |
-| 1   | Engagement đo bằng prompt count | Đo % ticket completed with AI + QA pass  | Đo outcome thật thay vì activity           |
-| 2   | Chỉ dùng CSAT trung bình        | Tách CSAT theo simple/medium/complex     | Phát hiện rủi ro ở case khó rõ hơn         |
-| 3   | Chưa có ngưỡng dừng mở rộng     | Thêm decision gate tuần theo CSAT/reopen | Biến dashboard thành công cụ ra quyết định |
+| #   | V1 có vấn đề gì?                                    | V2 sửa thành gì?                                      | Vì sao sửa này tốt hơn?                             |
+| --- | --------------------------------------------------- | ----------------------------------------------------- | --------------------------------------------------- |
+| 1   | Activation đo bằng % cài (không chứng minh sử dụng) | Đo % cài + dùng >= 1 query/ngày trong tuần 1          | Cài mà không dùng không prove adoption              |
+| 2   | CTR cao nhưng không track retention after exam      | Thêm Monthly Retention + NPS post-exam                | Mùa thi kết thúc → user sẽ gỡ cài nếu không có hook |
+| 3   | Timestamp accuracy đo qua survey self-report        | Blind peer-review QA: 500 random queries x 3 reviewer | Avoid rater bias                                    |
 
 ## 7. Checklist trước khi nộp
 
-- [x] Có 1 product cụ thể, không chọn "AI cho cả công ty".
-- [x] Có 2-4 workflow chính.
-- [x] Mỗi workflow có vai trò AI, human review và failure path.
-- [x] Có rào cản ADKAR chính.
-- [x] Dashboard có metric toàn product và metric theo workflow.
-- [x] Không chỉ đo usage: login, prompt count, DAU/MAU.
-- [x] Có baseline, target, data source và owner cho các metric chính.
-- [x] Có ít nhất 1 metric Quality, Trust hoặc Value.
-- [x] Có Red-team risk và Fix.
-- [x] Có ít nhất 2 thay đổi rõ từ v1 sang v2.
-- [x] Decision Memo có continue / pivot / kill.
+- [x] Có 1 product cụ thể, không chọn "AI cho cả công ty" → SVWorkspace (Chrome Extension) cho sinh viên
+- [x] Có 3 workflow chính (Query Processing, Timestamp Extraction, Feedback Collection)
+- [x] Mỗi workflow có vai trò AI, human review (QA) và failure path (error handling)
+- [x] Có rào cản ADKAR chính → Reinforcement (churn sau mùa thi)
+- [x] Dashboard có metric toàn product (3 metrics) và metric theo workflow (18 rows)
+- [x] Không chỉ đo vanity metric → CTR + NPS + Accuracy (outcome + trust)
+- [x] Có baseline, target, data source và owner cho các metric chính
+- [x] Có metric Quality (Timestamp Accuracy), Trust (NPS + Retention), Value (CTR + LTV/CAC)
+- [x] Có Red-team risk và Fix (4 risks identified + mitigation)
+- [x] Có 3 thay đổi rõ từ v1 sang v2 (Activation, CTR+Retention, QA accuracy rigor)
+- [x] Decision Memo có continue/pivot/kill → CONTINUE với guardrail (Retention + Accuracy)

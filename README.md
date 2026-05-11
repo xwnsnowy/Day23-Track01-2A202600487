@@ -21,8 +21,9 @@
 | File                          | Nội dung                                                     | Trạng thái    |
 | ----------------------------- | ------------------------------------------------------------ | ------------- |
 | `01-case-evidence-matrix.md`  | Phân tích case Klarna AI (learning từ Block 2)               | ✅ Hoàn thành |
+| `02-case-comparison.md`       | Case Comparison                                              | ✅ Hoàn thành |
 | `03-product-roi-dashboard.md` | Product ROI Dashboard cho SVWorkspace (Parts A-D)            | ✅ Hoàn thành |
-| `04-reflection.md`            | Reflection 150-200 từ về 1 metric/giả định (nộp 24h sau lớp) | ⏳ Sắp làm    |
+| `04-reflection.md`            | Reflection 150-200 từ về 1 metric/giả định (nộp 24h sau lớp) | ✅ Hoàn thành |
 
 ---
 

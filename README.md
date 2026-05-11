@@ -51,4 +51,4 @@ Pilot SVWorkspace với 20 sinh viên VinUni, tháng 5 2026:
 
 ## Links
 
-- **GitHub repo:** [\[Cập nhật URL sau khi push\]](https://github.com/xwnsnowy/Day23-Track01-2A202600487)
+- **GitHub repo:** [https://github.com/xwnsnowy/Day23-Track01-2A202600487]
